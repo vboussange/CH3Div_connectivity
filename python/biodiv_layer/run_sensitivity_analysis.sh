@@ -55,7 +55,7 @@ for ((i=0; i<${#jobs[@]}; i+=${#GPUS[@]})); do
             log "Starting job: Group=${group}, Habitat=${hab}, on GPU ${gpu}"
             
             # Run the job and redirect output to job-specific log file (silently)
-            python group_elasticity_analysis.py --group "$group" --hab "$hab" --gpu_id "$gpu" > "$job_log" 2>&1 &
+            python run_group_sensitivity_analysis.py --group "$group" --hab "$hab" --gpu_id "$gpu" > "$job_log" 2>&1 &
         fi
     done
     

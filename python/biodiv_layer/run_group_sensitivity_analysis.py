@@ -33,10 +33,10 @@ from group_preprocessing import compile_group_suitability, CRS_CH, GROUP_INFO
 from utils_raster import upscale, downscale, crop_raster, calculate_resolution
 from masks import get_CH_border
 
-def proximity(dist, D_m, alpha):
+def proximity(dist, D):
     """
-    Dispersal kernel. `dist` should be in ecological units (ec), `D_m` in meters, `alpha` in m/ec."""
-    return jnp.exp(-dist * alpha / D_m)
+    Dispersal kernel. Both dist and D should be in the same units (ecological units or pixels)."""
+    return jnp.exp(-dist / D)
 
 def run_elasticity_analysis_for_group(group, hab, sens_type, config):
     """
@@ -52,27 +52,27 @@ def run_elasticity_analysis_for_group(group, hab, sens_type, config):
     fine_resolution, _ = calculate_resolution(suitability_dataset["mean_suitability"])
     D_m = suitability_dataset.attrs["D_m"]
 
-    upscale_resolution = max(fine_resolution, D_m * config["analysis_precision"])
-    quality_raster = upscale(suitability_dataset["mean_suitability"], upscale_resolution)
+    working_resolution = max(fine_resolution, D_m * config["analysis_precision"]) # [m] / [pixel]
+    quality_raster = upscale(suitability_dataset["mean_suitability"], working_resolution)
 
     quality = jnp.array(quality_raster.values, dtype=config["dtype"])
     quality = jnp.nan_to_num(quality, nan=0.0)
     quality = jnp.clip(quality, 1e-5, None)
 
-    dependency_range = math.ceil(3 * D_m / upscale_resolution) # [pixel]
+    dependency_range = math.ceil(3 * D_m / working_resolution) # [pixel]
 
     if isinstance(distance_fn, LCPDistance):
         mean_dist = jnp.mean(1 / quality) #  [ecological unit (ec)] / [pixel]
-        alpha = upscale_resolution / mean_dist # [m] / [ec]
+        D = mean_dist / working_resolution * D_m # [ec]
     else:
-        alpha = upscale_resolution # [m]
+        D = D_m / working_resolution # [pixel]
 
 
     sensitivity_analyzer = SensitivityAnalysis(
         quality_raster=quality,
         permeability_raster=quality,
         distance=distance_fn,
-        proximity=lambda dist: proximity(dist, D_m, alpha),
+        proximity=lambda dist: proximity(dist, D),
         coarsening_factor=0.,
         dependency_range=dependency_range,
         batch_size=config["batch_size"]
