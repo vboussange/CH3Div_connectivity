@@ -2,7 +2,6 @@
 # Ecological connectivity analysis for Switzerland <img src="https://speed2zero.ethz.ch/wp-content/uploads/2023/02/SPEED2ZERO_Logo_trans.png" width="300" align="right">
 
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.20540310.svg)](https://doi.org/10.5281/zenodo.20540310)
-[![DOI-data](https://zenodo.org/badge/DOI/10.5281/zenodo.14676988.svg)](https://doi.org/10.5281/zenodo.14676988)
 
 
 This repository contains the code used to assess the contribution of a location to the ecological connectivity at the Swiss landscape level, within the context of the [SPEED2ZERO](https://speed2zero.ethz.ch/en/) project.
@@ -56,7 +55,7 @@ If you use this repository, please cite:
 > Adde, A., Boussange, V., Chauvier, Y., Dahito, M.-A., Früh, J., Graham, C., Pellissier, L., Zimmermann, N., & Altermatt, F. (2025). Spatial biodiversity indicators and a composite index for conservation prioritization in Switzerland. [bioRxiv](https://doi.org/10.1101/2025.06.10.657334)
 
 
-## Results
+## Product outputs
 Elasticity maps and the Ecological connectivity importance score product are hosted under [this Zenodo archive](https://zenodo.org/records/14676988). Permeability elasticity maps are provided exclusively for groups where least-cost path distance is used to calculate proximity. For groups where Euclidean distance is used, species movement is assumed to be unaffected by the landscape.
 
 ## Roadmap
