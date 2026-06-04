@@ -1,6 +1,7 @@
 using SparseArrays
 using LinearAlgebra
 
+# hitting cost
 function CommuteCostToTarget(P::SparseMatrixCSC, C::SparseMatrixCSC, target::Int)
     #Computes the directed commute-cost distances from all nodes to a target node.
     #Inputs:
@@ -23,6 +24,7 @@ function CommuteCostToTarget(P::SparseMatrixCSC, C::SparseMatrixCSC, target::Int
     return IP\Pc;
 end
 
+# hitting cost
 function CommuteCostFull(P::SparseMatrixCSC,C::SparseMatrixCSC)
     #Computes the entire directed commute-cost distance matrix.
     #Inputs:

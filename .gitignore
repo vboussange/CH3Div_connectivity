@@ -11,3 +11,4 @@ stdout/*
 data/*
 *.out
 *.log
+*.png
