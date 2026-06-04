@@ -1,7 +1,7 @@
 
 # Ecological connectivity analysis for Switzerland <img src="https://speed2zero.ethz.ch/wp-content/uploads/2023/02/SPEED2ZERO_Logo_trans.png" width="300" align="right">
 
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.14676988.svg)](10.5281/zenodo.14676988)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.14676988.svg)](https://doi.org/10.5281/zenodo.14676988)
 
 
 This repository contains the code used to assess the contribution of a location to the ecological connectivity at the Swiss landscape level, within the context of the [SPEED2ZERO](https://speed2zero.ethz.ch/en/) project.
@@ -10,7 +10,7 @@ The importance of a pixel for supporting ecological connectivity is evaluated by
 
 Individual maps for taxonomic groups are aggregated to produce a single Ecological Connectivity Importance Score, which identifies areas critical to maintaining overall connectivity.
 
-![](ecological_connectivity_importance_Terrestrial.png)
+![](ecological_connectivity_importance_score_max_aquatic_terrestrial.png)
 > Ecological connectivity importance score map for terrestrial species. Higher values indicate higher contribution of the pixels for overall ecological connectivity, implying larger loss of connectivity if the pixel's ecological quality or permeability is degraded.
 
 A manuscript detailing the approach will be available soon.
@@ -31,20 +31,25 @@ conda env create --file environment.yml --prefix ./.env
 ```
 
 #### Input data
+The analysis depends on mean suitability maps for each taxonomic group considered, which are derived from individual species suitability maps obtained from
 
-The analysis depends on mean suitability maps for each taxonomic group considered, which are available from [this Zenodo archive](https://zenodo.org/records/14676988) and placed under `data/raw`. Simply download the folder and place it under the root folder.
+>  Adde, A., ..., Guisan, A., & Altermatt, F. SDMapCH: A comprehensive database of modelled species habitat suitability maps for Switzerland. *In preparation*.
 
-The species maps from which the mean suitability maps have been derived, together with the mean dispersal range used for the calculation of ecological proximity, are stored in each `.nc` file attributes.
+Path to this data must be inserted in `python/src/NSDM.py` in variable `NSDM_PATH`.
 
-Access to the individual species distribution maps used to generate the mean suitability maps for each taxonomic group, along with individual species dispersal range data, is restricted but may be considered upon request.
+We also use a dataset of traits to derive species habitats and dispersal range. Path to this data must be inserted in `python/src/TraitsCH.py` in variable `TRAITS_CH_PATH`.
+
+Access to the mean suitability maps for each taxonomic group, to the individual species suitability maps, and to the individual species dispersal range data, is restricted but may be considered upon request.
 
 ## File description
-- `python/biodiv_layer/group_elasticity_*.py`: Calculate (pemerability/quality) elasticities at the taxonomic group level. 
-- `group_summed_elasticities`: Aggregates elasticities to calculate the Ecological connectivity importance score.
+- `python/biodiv_layer/run_group_sensitivity_analysis.py`: Main script to calculate permeability and quality elasticities at the taxonomic group level for a given habitat (aquatic or terrestrial). See header on how to use it, or simply run `python/biodiv_layer/run_sensitivity_analysis.sh`.
+- `python/biodiv_layer/run_sensitivity_analysis.sh`: runs the `run_group_sensitivity_analysis.py` scripts for each group and habitat.
+- `python/biodiv_layer/calculate_eci.py`: Aggregates elasticities at the habitat level to calculate the habitat-specific ecological connectivity importance (ECI) score.
+- `python/biodiv_layer/calculate_metadata.py`: Generates a `.csv` file listing all species and associated dispersal range used in the calculation of the habitat-specific Ecological connectivity importance score.
 - `src/*`: Utility functions.
 
 ## Results
-Elasticity maps and the Ecological connectivity importance score product are hosted under [this Zenodo archive](https://zenodo.org/records/14676988) and placed under `data/processed/HASH/`. Permeability elasticity maps are provided exclusively for groups where least-cost path distance is used to calculate proximity. For groups where Euclidean distance is used, species movement is assumed to be unaffected by the landscape.
+Elasticity maps and the Ecological connectivity importance score product are hosted under [this Zenodo archive](https://zenodo.org/records/14676988). Permeability elasticity maps are provided exclusively for groups where least-cost path distance is used to calculate proximity. For groups where Euclidean distance is used, species movement is assumed to be unaffected by the landscape.
 
 ## Roadmap
 - [ ] Harmonize `.nc` and `.tiff` file formats.

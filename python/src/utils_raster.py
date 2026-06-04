@@ -3,6 +3,7 @@ import rioxarray
 import geopandas as gpd
 import numpy as np
 from scipy import ndimage
+import logging
 CRS_CH = "EPSG:2056" # https://epsg.io/2056
 
 def calculate_resolution(raster):
@@ -39,7 +40,7 @@ def load_raster(path, scale=True):
                 raster_min = raster.min().item()
 
                 if (raster_max > 1) & (raster_min < 100):
-                    print("Rescaling habitat quality between 0 and 1")
+                    logging.debug("Rescaling habitat quality between 0 and 1")
                     raster = raster / 100.  # Scale values
                 else:
                     raise ValueError("Raster values are not in the expected range")
@@ -50,19 +51,7 @@ def load_raster(path, scale=True):
 def crop_raster(raster, buffer):
     buffered_gdf = gpd.GeoDataFrame(geometry=buffer)
     masked_raster = raster.rio.clip(buffered_gdf.geometry, buffered_gdf.crs)
-    return masked_raster
-
-
-def mask_raster(raster, traits_dataset, masks_dataset):
-    sp_name = raster.name
-    hab = traits_dataset.get_habitat(sp_name)
-    if hab in masks_dataset.masks.keys():
-        mask = masks_dataset[hab]
-        return raster.rio.clip(mask, all_touched=True, drop=True)
-    
-    else:
-        return raster
-    
+    return masked_raster    
     
 
 def dataset_to_geotiff(dataset, filepath):
